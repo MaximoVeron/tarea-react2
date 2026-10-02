@@ -1,50 +1,90 @@
-# Welcome to your Expo app 👋
+# Comedor IPF - App de pedidos
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+App de comida para el Instituto Politécnico Formosa, desarrollada con Expo Router (SDK 54).
 
-## Get started
+## Como correr la app
 
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+1. Instalar dependencias:
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Iniciar el servidor de desarrollo:
 
-## Learn more
+```bash
+npm start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+3. Escanear el QR con Expo Go (Android) o usar el simulador iOS.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Estructura de rutas (src/app)
 
-## Join the community
+```
+src/app/
+├── _layout.tsx           # Layout raiz: providers, navegacion principal
+├── (tabs)/               # Pestanas inferiores
+│   ├── _layout.tsx       # Configuracion de tabs
+│   ├── index.tsx         # / - Inicio
+│   ├── menu/             # Menu de platos
+│   │   ├── _layout.tsx
+│   │   ├── index.tsx    # /menu - Lista por categorias
+│   │   └── [id].tsx     # /menu/1 - Detalle de plato
+│   └── carrito/          # Carrito de compras
+│       ├── _layout.tsx
+│       ├── index.tsx    # /carrito
+│       └── nota.tsx     # /carrito/nota
+├── categorias/
+│   └── [categoria].tsx   # /categorias/desayuno
+├── buscar.tsx            # /buscar?q=...&categoria=...
+├── confirmar.tsx        # /confirmar (modal)
+├── turno/
+│   └── [numero].tsx      # /turno/1
+├── login.tsx            # /login (modal)
+├── cocina/              # Area de cocina (protegida)
+│   ├── _layout.tsx      # Drawer
+│   ├── index.tsx        # /cocina - Pedidos pendientes
+│   └── atendidos.tsx    # /cocina/atendidos
+├── ayuda/
+│   ├── index.tsx        # /ayuda
+│   └── [...slug].tsx    # /ayuda/horarios
+├── pedido.tsx           # /pedido -> redirect a /carrito
+└── +not-found.tsx      # 404
+```
 
-Join our community of developers creating universal apps.
+## Porque se usa replace en la confirmacion?
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+En `confirmar.tsx` se usa `router.replace()` en vez de `router.push()`:
+
+```tsx
+router.replace({
+  pathname: "/turno/[numero]",
+  params: { numero },
+});
+```
+
+**Problema con push:** Si el usuario confirma y va al turno, al tocar "atrás" volvería a la pantalla de confirmación y podría confirmar dos veces el mismo pedido.
+
+**Solucion con replace:** Replace sustituye la pantalla actual en la pila de navegación, entonces la confirmación desaparece del historial. El usuario no puede volver atrás a confirmar nuevamente.
+
+## Deep link de prueba
+
+Para probar con Expo Go:
+
+```
+exp://TU_IP:8081/--/menu/3
+```
+
+Reemplazar `TU_IP` con la dirección IP de tu computadora (可见 en la terminal al ejecutar `npm start`).
+
+## Capturas de pantalla
+
+[INSERTAR CAPTURAS AQUI]
+
+- Inicio
+- Menu por categorias
+- Detalle de plato
+- Carrito
+- Turno asignado
+- Area de cocina (con sesion)
+- Pedidos atendidos
