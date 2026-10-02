@@ -76,15 +76,3 @@ exp://TU_IP:8081/--/menu/3
 ```
 
 Reemplazar `TU_IP` con la dirección IP de tu computadora (可见 en la terminal al ejecutar `npm start`).
-
-## Capturas de pantalla
-
-[INSERTAR CAPTURAS AQUI]
-
-- Inicio
-- Menu por categorias
-- Detalle de plato
-- Carrito
-- Turno asignado
-- Area de cocina (con sesion)
-- Pedidos atendidos
